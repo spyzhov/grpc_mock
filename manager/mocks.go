@@ -55,7 +55,7 @@ func (m *mock) get(pkg PackageName, service ServiceName, method MethodName, hash
 func Reset() {
 	mocks.mu.Lock()
 	defer mocks.mu.Unlock()
-	mocks.Packages = make(Packages, 0)
+	mocks.Packages = make(Packages)
 }
 
 func Set(pkg PackageName, service ServiceName, method MethodName, request Request, response Response, error Error) {
@@ -68,10 +68,10 @@ func Set(pkg PackageName, service ServiceName, method MethodName, request Reques
 		mock.Called = 0
 	} else {
 		if _, ok := mocks.Packages[pkg]; !ok {
-			mocks.Packages[pkg] = make(Stubs, 0)
+			mocks.Packages[pkg] = make(Stubs)
 		}
 		if _, ok := mocks.Packages[pkg][service]; !ok {
-			mocks.Packages[pkg][service] = make(Stub, 0)
+			mocks.Packages[pkg][service] = make(Stub)
 		}
 		if _, ok := mocks.Packages[pkg][service][method]; !ok {
 			mocks.Packages[pkg][service][method] = make(Mocks, 0)

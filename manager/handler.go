@@ -33,6 +33,10 @@ func Handler(writer http.ResponseWriter, request *http.Request) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("error: %v", r)
+			if err != nil {
+				_, _ = writer.Write([]byte(err.Error()))
+				writer.WriteHeader(http.StatusInternalServerError)
+			}
 		}
 	}()
 	switch request.Method {

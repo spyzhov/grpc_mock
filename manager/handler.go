@@ -76,7 +76,7 @@ func Handler(writer http.ResponseWriter, request *http.Request) {
 			Response(req.Response),
 			req.Error)
 	case http.MethodGet:
-		panic("not implemented")
+		// todo: not implemented
 	}
 	if err != nil {
 		_, _ = writer.Write([]byte(err.Error()))

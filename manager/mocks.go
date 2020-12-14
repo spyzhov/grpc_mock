@@ -33,6 +33,10 @@ type (
 	}
 )
 
+const (
+	notImportant = "not-important"
+)
+
 var mocks = &mock{Packages: make(Packages)}
 
 func (m *mock) get(pkg PackageName, service ServiceName, method MethodName, hash RequestHash) *Mock {
@@ -122,6 +126,9 @@ func Call(pck PackageName, service ServiceName, method MethodName, in interface{
 }
 
 func (r Request) Hash() RequestHash {
+	if string(r) == `null` {
+		return nil
+	}
 	data := new(RequestHash)
 	if err := json.Unmarshal(r, &data); err != nil {
 		log.Panicf("error on parse request: %s\nInput:\n%s", err, string(r))
@@ -130,7 +137,55 @@ func (r Request) Hash() RequestHash {
 }
 
 func isEqualHash(left, right RequestHash) bool {
+	return compare(left, right)
+}
+
+func compare(left, right interface{}) bool {
+	if !isImportant(left) || !isImportant(right) {
+		return true
+	}
+	if l, ok := left.([]interface{}); ok {
+		if r, ok := right.([]interface{}); ok {
+			if len(r) != len(l) {
+				return false
+			}
+			for i := range l {
+				if !compare(l[i], r[i]) {
+					return false
+				}
+			}
+			return true
+		}
+		return false
+	}
+	if l, ok := left.(map[string]interface{}); ok {
+		if r, ok := right.(map[string]interface{}); ok {
+			for i := range l {
+				rv, _ := r[i]
+				if !compare(l[i], rv) {
+					return false
+				}
+			}
+			for i := range r {
+				if _, ok := l[i]; ok {
+					continue
+				}
+				if !compare(nil, r[i]) {
+					return false
+				}
+			}
+			return true
+		}
+		return false
+	}
 	return reflect.DeepEqual(left, right)
+}
+
+func isImportant(value interface{}) bool {
+	if str, ok := value.(string); ok {
+		return str != notImportant
+	}
+	return true
 }
 
 func (m *Mock) Used() {

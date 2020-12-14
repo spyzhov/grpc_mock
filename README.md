@@ -31,6 +31,13 @@ curl -X POST -d '{"request":{"name": "word"}, "response": {"name": "Hello World!
     localhost:8000/helloworld.Greeter/SayHello
 ```
 
+Any field in request could be set as not important with the string: `not-important`
+
+```
+curl -X POST -d '{"request":{"name": "not-important"}, "response": {"name": "Hello World!"}}' \
+    localhost:8000/helloworld.Greeter/SayHello
+```
+
 Clear response:
 
 ```

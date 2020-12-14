@@ -28,16 +28,16 @@ jobs:
 
           # Optional: show only new issues if it's a pull request. The default value is `false`.
           # only-new-issues: true
-#  test:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        go: [ '1.14', '1.15' ]
-#    name: Go test ${{ matrix.go }}
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Setup go
-#        uses: actions/setup-go@v1
-#        with:
-#          go-version: ${{ matrix.go }}
-#      - run: go test -race ./...
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [ '1.15' ]
+    name: Go test ${{ matrix.go }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup go
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
+      - run: go test -race ./...
